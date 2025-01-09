@@ -1,5 +1,12 @@
-module.exports = function(app) {
-  app.get('/stocks/:ticker', function(req, res) {
-    res.send(req.params.ticker) 
+const handling = require("../handling.js")
+
+module.exports = async function(app) {
+  app.get('/stocks', async function(req, res) {
+    let query = req.query;
+    let key = query.key;
+  
+    let isValid = await handling.isGetRequestValid(key, res)
+    if (!isValid) return;
+
   })
 }

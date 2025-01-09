@@ -10,7 +10,6 @@ async function startApp() {
 
   app.listen(process.env.PORT);
   app.use(express.static('public'));
-
 }
 
 

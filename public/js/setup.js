@@ -1,25 +1,26 @@
-function getIDs(reset = false) {
+import { getJSONData } from "./lib/handler.js"
 
+async function getIDs(reset = false) {
   if ("id" in localStorage && "hashed_id" in localStorage && !reset) return;
 
-  var xhttp = new XMLHttpRequest();
+  let ids = await getJSONData(`ids`)
+  .catch((error) => { 
+    console.error(`Error when getting ids from server: ${error}.`)
+    return;
+  });
 
-  xhttp.open('GET', '/ids/', true);
+  const { id, hashed_id } = ids;
 
-  xhttp.onload = function () {
-    // If not successful (status code 200), return.
-    if (this.status !== 200) {
-      console.error("Unsuccessful in recieving IDs.")
-    }
-    const {id, hashed_id} = JSON.parse(this.responseText);
-    localStorage.setItem('id', id)
-    localStorage.setItem('hashed_id', hashed_id)
+  if (!id || !hashed_id) {
+    console.error("Undefined ID/hashed ID! Cannot continue.")
+    return;
   }
-  xhttp.onerror = function () {
-    console.error(`Error in requesting IDs.`)
-  }
-  xhttp.send();
+
+  localStorage.setItem('id', id)
+  localStorage.setItem('hashed_id', hashed_id)
 }
+
+document.getIDs = function() { getIDs(true) }
 
 window.onload = function() {
   getIDs()

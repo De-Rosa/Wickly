@@ -65,6 +65,11 @@ function badRequest(res) {
   return false;
 }
 
+function conflict(res) {
+  res.sendStatus(409) // Client error: conflict.
+  return false;
+}
+
 function notFound(res) {
   res.sendStatus(404) // Client error: not found.
   return false;
@@ -75,4 +80,4 @@ function internalError(res) {
   return false;
 }
 
-module.exports = { isGetRequestValid, isPostRequestValid, unauthorized, badRequest, notFound, internalError }
+module.exports = { isGetRequestValid, isPostRequestValid, unauthorized, badRequest, conflict, notFound, internalError }

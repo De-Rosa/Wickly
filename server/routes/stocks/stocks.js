@@ -18,7 +18,7 @@ module.exports = async function(app) {
     fetchPolygon(res, endpoint).then((fetched) => {
       res.send(fetched)
     }).catch((error) => { 
-      return false;
+      return;
     })
 
   })
@@ -36,7 +36,7 @@ module.exports = async function(app) {
     fetchPolygon(res, endpoint).then((fetched) => {
       res.send(fetched)
     }).catch((error) => { 
-      return false;
+      return;
     })
   })
 
@@ -53,19 +53,19 @@ module.exports = async function(app) {
     fetchPolygon(res, endpoint).then((fetched) => {
       res.send(fetched)
     }).catch((error) => { 
-      return false;
+      return;
     })
   })
 
 
   async function fetchPolygon(res, endpoint) {
     const baseURL = "https://api.polygon.io"
-    console.log(`${baseURL}/${endpoint}`)
     try {
       fetched = await fetch(`${baseURL}/${endpoint}`, {
         method: "GET",
         headers: {"Content-Type": "application/json"}
       })
+
       if (fetched.ok) return fetched.json();
       res.sendStatus(fetched.status)
       throw new Error(fetched.status)
@@ -76,6 +76,8 @@ module.exports = async function(app) {
   }
 
   function getTimeframe() {
+    // https://stackoverflow.com/a/60121079
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString
     function getDate(offset) {
       const options = { month: "2-digit", day: "2-digit", year: "numeric" }
       let date = new Date()
@@ -84,7 +86,7 @@ module.exports = async function(app) {
     }
 
     let toDate = getDate(2) 
-    let fromDate = getDate(31)
+    let fromDate = getDate(31 * 5)
 
     return [fromDate, toDate]
   }

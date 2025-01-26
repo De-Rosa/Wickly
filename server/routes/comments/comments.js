@@ -26,7 +26,14 @@ module.exports = function(app) {
     let parsed = JSON.parse(json);
 
     const {key, contents, id, hashed_id} = parsed
-    let commentJson = {"contents": contents, "id": id}
+
+    if (contents.length > 100) return handling.badRequest();
+
+    // https://stackoverflow.com/a/63160519
+    let date = new Date()
+    let dateString = date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+
+    let commentJson = {"contents": contents, "datetime": dateString, "id": id}
     databases.appendToDB("comments", key, commentJson, res)
   })
 }

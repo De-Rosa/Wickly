@@ -1,10 +1,10 @@
 async function wrapper(fetch) {
   try {
-    if (!location) throw new Error('Missing location')
+    if (!location) throw new Error(400)
 
     let fetched = await fetch()
     if (fetched.ok) return fetched;
-    throw new Error(`Response ${fetched.status}`)
+    throw new Error(fetched.status)
 
   } catch (error) {
     return Promise.reject(error)

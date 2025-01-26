@@ -10,7 +10,7 @@ module.exports = function(app) {
     let isValid = await handling.isGetRequestValid(key, res)
     if (!isValid) return;
 
-    databases.readFromDB("comments", key, res);
+    databases.readFromDB("index-funds", key, res);
   })
 
   app.use(express.json())
@@ -24,8 +24,15 @@ module.exports = function(app) {
     // Do not need to check for exceptions, already done after checking for validity.
     let json = JSON.stringify(data);
     let parsed = JSON.parse(json);
+  
+    let {stocks, key, id, hashed_id} = parsed
+    
+    // https://stackoverflow.com/a/9229821
+    stocks = [...new Set(stocks)]
 
-    const {stocks, key, id, hashed_id} = parsed
+    if (stocks.length >= 10) return handling.badRequest(); 
+    if (key.length > 10 | key.length == 0) return handling.badRequest();
+  
     let indexJson = {"stocks": stocks, "id": id}
     databases.writeToDB("index-funds", key, indexJson, res)
   })

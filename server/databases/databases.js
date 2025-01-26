@@ -5,8 +5,7 @@ async function readFromDB(database, key, res) {
   if (!database || !key || !res) return;
 
   fsReadToJSON(database, res, async function(json) {
-    if (!json.hasOwnProperty(key)) return handling.notFound(res);
-    res.send(json[key]);
+    res.send(json.hasOwnProperty(key) ? json[key] : []);
   })
 }
 
@@ -34,7 +33,7 @@ async function writeToDB(database, key, data, res) {
 
   fsReadToJSON(database, res, async function(json) {
     if (json.hasOwnProperty(key)) {
-      return handling.badRequest(res); 
+      return handling.conflict(res); 
     }
 
     json[key] = data

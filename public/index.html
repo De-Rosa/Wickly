@@ -1,16 +1,148 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="business">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Wickly</title>
+    <title>wickly</title>
     <link href="css/style.css" rel="stylesheet">
+
+    <script src="https://cdn.canvasjs.com/ga/canvasjs.stock.min.js"></script>
 
     <script src="js/setup.js" type="module"></script>
     <script src="js/comments.js" type="module"></script>
+    <script src="js/index-funds.js" type="module"></script>
+    <script src="js/stocks.js" type="module"></script>
+
+    <script src="js/search.js" type="module"></script>
+    <script src="js/view.js" type="module"></script>
 
   </head>
   <body>
-  
+    <!-- error/information in top right of screen -->
+    <div id="toast" class="toast toast-top toast-start max-w-lg z-99">
+    </div>
+
+    
+    <div id="search-screen" class="h-screen flex flex-col justify-center items-center">
+      <!-- https://daisyui.com/components/theme-controller/ -->
+      <label class="swap swap-rotate absolute p-6 left-0 bottom-0">
+        <input type="checkbox" class="theme-controller" value="corporate" />
+
+        <svg
+          class="swap-off h-10 w-10 fill-current"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24">
+          <path
+            d="M5.64,17l-.71.71a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71A1,1,0,0,0,5.64,17ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm7-7a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41l-.71-.71A1,1,0,0,0,4.93,6.34Zm12,.29a1,1,0,0,0,.7-.29l.71-.71a1,1,0,1,0-1.41-1.41L17,5.64a1,1,0,0,0,0,1.41A1,1,0,0,0,17.66,7.34ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-9,8a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19ZM18.36,17A1,1,0,0,0,17,18.36l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM12,6.5A5.5,5.5,0,1,0,17.5,12,5.51,5.51,0,0,0,12,6.5Zm0,9A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z" />
+        </svg>
+
+        <svg
+          class="swap-on h-10 w-10 fill-current"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24">
+          <path
+            d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z" />
+        </svg>
+      </label>
+
+      <div class="pb-4 text-6xl lg:text-8xl lg:pb-8 select-none cursor-default font-bold italic"> wickly </div>
+      <!-- breakpoints for larger screens (lg:), will be smaller and stacked vertically on mobile -->
+      <form id="search-form" class="inline-block contents" method="GET" action="." onsubmit="document.searchSubmit(event, this)">
+        <label id="search-box" class="input input-bordered flex items-center input-lg w-full max-w-xs lg:max-w-2xl">
+          <!-- https://stackoverflow.com/a/49904823 https://stackoverflow.com/a/37451454-->
+          <input name="ticker" oninput="let p=this.selectionStart;this.value=this.value.toUpperCase();this.setSelectionRange(p, p);" type="search" placeholder="Enter a ticker code..." class="grow max-w-48 mr-2 lg:max-w-lg" pattern="[A-Za-z.]*"/>
+
+          <select name="type" id="select-box" class="select select-bordered max-w-24 lg:max-w-xs">
+            <option selected>Stock</option>
+            <option>Crypto</option>
+            <option>Index Fund</option>
+          </select>
+
+        </label>
+      </form>
+    </div>
+
+    <div id="view-screen" class="h-screen flex flex-col hidden">
+      <button onclick="document.openSearch()" class="btn btn-circle bg-primary m-12 fixed left-0 bottom-0 z-99">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+
+      <div class="inline-block xl:grid xl:grid-cols-6 xl:grid-rows-6 max-h-screen max-w-screen">
+
+        <div class="hidden xl:inline-block xl:col-span-2 box-border xl:order-1">
+          <div class="stats shadow bg-primary max-w-xl m-12">
+            <div class="stat">
+              <div id="ticker" class="stat-value">TEST</div>
+              <div id="name" class="stat-desc overflow-scroll">Skeleton Value Corp.</div>
+            </div>
+
+            <div class="stat">
+              <div class="stat-title" id="primary-exchange-title">Primary Exchange</div>
+              <div id="primary-exchange" class="stat-value">TEST</div>
+            </div>
+
+            <div class="stat">
+              <div class="stat-title overflow-scroll" id="type-title">Type</div>
+              <div id="type" class="stat-value">CS</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="absolute xl:relative xl:col-span-2 box-border xl:order-2">
+          <div class="dropdown dropdown-end m-12 absolute right-0">
+            <div tabindex="0" role="button" class="btn btn-lg btn-success" id="index-button" onclick="document.indexButtonPress()">Add to Index Fund</div>
+            <ul tabindex="0" class="dropdown-content menu bg-base-200 rounded-box z-[1] w-52 p-2 shadow ">
+          <!-- https://stackoverflow.com/a/49904823 https://stackoverflow.com/a/37451454-->
+              <input id="index-name" type="text" placeholder="NAME" class="input input-ghost w-full text-2xl font-bold text-center bg-base-300" oninput="let p2=this.selectionStart;this.value=this.value.toUpperCase();this.setSelectionRange(p2, p2);" pattern="[A-Za-z]*"/>
+              <div id="index-list" class="overflow-y-scroll flex flex-col"></div>
+              <button id="index-submit" class="btn btn-outline btn-secondary order-last" onclick="document.indexSubmitPress()">Create Index Fund</button>
+            </ul>
+          </div>
+        </div>
+
+        <div class="float-none inline xl:row-span-5 xl:col-span-4 box-border xl:order-4">
+          <div id="chart-container" class="p-6 m-6 xl:p-12 xl:m-12 bg-neutral rounded-lg"></div>
+        </div>
+
+        <div class="float-none xl:col-span-2 xl:row-span-6 lg:relative flex flex-col min-h-screen xl:order-3 pt-0">
+          <div class="max-h-screen flex flex-grow">
+            <div class="p-6 m-6 xl:p-12 xl:m-12 bg-base-200 rounded-lg h-auto flex flex-col box-border flex-grow">
+              <div id="scroll" class="overflow-y-scroll flex flex-[6] mb-6 bg-base-300 rounded-lg max-h-screen">
+                <div id="comments" class="flex flex-col flex-[1] m-3 z-1"></div>
+              </div>
+
+              <div class="flex flex-[1] bg-base-300 rounded-lg justify-center ">
+                <label class="form-control mt-3">
+                  <div class="label">
+                    <span class="label-text font-bold">Comment</span>
+                    <span id="characters" class="label-text-alt"></span>
+                  </div>
+
+                  <form id="comment-form" method="GET" action="." onsubmit="document.commentSubmit(event, this)">
+                    <div class="join">
+                      <input type="text" name="comment" id="comment-box" class="join-item input input-bordered border-5 rounded-l-lg bg-base-300" placeholder="Send a comment..."></input>
+                      <input type="submit" id="comment-submit" class="join-item btn btn-outline rounded-r-lg btn-secondary"></input>
+                    </div>
+                  </form>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- https://daisyui.com/components/stat/ -->
+      </div>
+    </div>
   </body>
 </html>

@@ -42,7 +42,7 @@ module.exports = function(app) {
 
     const requiredFields = ["contents", "id", "hashed_id", "key"]
     let isValid = await handling.isPostRequestValid(data, requiredFields, res);
-    if (!isValid) return;
+    if (!isValid) return; // Already sent an error code.
 
     // Do not need to check for exceptions, already done after checking for validity.
     let json = JSON.stringify(data);
@@ -50,8 +50,8 @@ module.exports = function(app) {
 
     const {key, contents, id, hashed_id} = parsed
 
-    if (contents.length > 100) return handling.badRequest();
-
+    if (contents.length > 100 || contents.length == 0) return handling.badRequest(res);
+    
     // https://stackoverflow.com/a/63160519
     let date = new Date()
     let dateString = date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});

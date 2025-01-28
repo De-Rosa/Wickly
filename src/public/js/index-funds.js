@@ -10,6 +10,12 @@ document.createIndexFund = async function(location, stocks) {
     return Promise.reject(400);
   };
 
+  // Name of index fund is not uppercase characters.
+  // https://stackoverflow.com/a/23476587
+  if (!/^[A-Z]*$/.test(location)) {
+    return Promise.reject(400);
+  }
+
   // Removing duplicates from the list.
   // https://stackoverflow.com/a/9229821
   let unique_stocks = [...new Set(stocks)]
@@ -24,7 +30,7 @@ document.createIndexFund = async function(location, stocks) {
     "id": localStorage.getItem("id"),
     "hashed_id": localStorage.getItem("hashed_id")
   }
- 
+
   let result = await postJSONData("index-funds", data)
   return result;
 }

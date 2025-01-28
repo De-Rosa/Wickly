@@ -60,6 +60,10 @@ async function isPostRequestValid(data, requiredKeys, res) {
       return badRequest(res);
     }
   }
+
+  if (!dataParsed.key) {
+    return badRequest(res);
+  }
   
   if (!await isIDValid(dataParsed.id, dataParsed.hashed_id)) {
     return unauthorized(res);

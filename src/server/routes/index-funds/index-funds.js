@@ -43,19 +43,24 @@ module.exports = function(app) {
 
     const requiredFields = ["stocks", "id", "hashed_id", "key"]
     let isValid = await handling.isPostRequestValid(data, requiredFields, res);
-    if (!isValid) return;
+    if (!isValid) return; // Already sent an error code.
 
     // Do not need to check for exceptions, already done after checking for validity.
     let json = JSON.stringify(data);
     let parsed = JSON.parse(json);
   
     let {stocks, key, id, hashed_id} = parsed
-    
+
+    // Name of index fund is not uppercase characters.
+    // https://stackoverflow.com/a/23476587
+    if (!/^[A-Z]*$/.test(key)) return handling.badRequest(res); 
+
+    // Remove duplicate stocks.
     // https://stackoverflow.com/a/9229821
     stocks = [...new Set(stocks)]
 
-    if (stocks.length >= 10) return handling.badRequest(); 
-    if (key.length > 10 | key.length == 0) return handling.badRequest();
+    if (stocks.length >= 10 || stocks.length == 0) return handling.badRequest(res); 
+    if (key.length > 10 | key.length == 0) return handling.badRequest(res);
   
     let indexJson = {"stocks": stocks, "id": id}
     databases.writeToDB("index-funds", key, indexJson, res)

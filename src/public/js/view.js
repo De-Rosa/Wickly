@@ -279,6 +279,8 @@ document.indexSubmitPress = async function() {
     indexSubmitError("Cannot create an empty index fund.")
     return;
   }
+
+  // Name of index fund is not uppercase characters.
   // https://stackoverflow.com/a/23476587
   if (!/^[A-Z]*$/.test(name)) {
     indexSubmitError("Name must be characters only.")

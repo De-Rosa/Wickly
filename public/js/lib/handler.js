@@ -1,3 +1,7 @@
+// Handler file, used by other client-side files to GET/POST JSON data to a given route.
+
+// Wrapper for fetch function to catch any errors and reject a promise with an error code.
+
 async function wrapper(fetch) {
   try {
     if (!location) throw new Error(400)
@@ -11,6 +15,9 @@ async function wrapper(fetch) {
   }
 }
 
+// GET request for a given route 
+// Outputs the requested JSON.
+
 async function getJSONData(location) {
   let data = await wrapper(async () => {
     return fetch(`/${location}`, {
@@ -21,6 +28,9 @@ async function getJSONData(location) {
 
   return data.json()
 }
+
+// POST request for a given route 
+// Outputs the status of posting the JSON.
 
 async function postJSONData(location, data) {
   let result = await wrapper(async () => {

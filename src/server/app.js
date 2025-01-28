@@ -11,7 +11,7 @@ async function startApp() {
   app.use(routes);
 
   app.listen(process.env.PORT);
-  app.use(express.static('public'));
+  app.use(express.static('src/public'));
 }
 
 

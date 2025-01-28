@@ -2,12 +2,12 @@
   "name": "wickly",
   "version": "1.0.0",
   "description": "stock tracker",
-  "main": "server/app.js",
+  "main": "./src/server/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "startserver": "nodemon server/app.js --ignore ./server/routes/comments/comments.json",
-    "compilecss": "npx tailwindcss -i ./public/css/input.css -o ./public/css/style.css",
-    "start": "npm run startserver & npm run compilecss"
+    "dev": "nodemon ./src/server/app.js",
+    "start": "node ./src/server/app.js",
+    "compilecss": "npx tailwindcss -i ./src/public/css/input.css -o ./src/public/css/style.css"
   },
   "repository": {
     "type": "git",

@@ -91,18 +91,15 @@ async function searchIndexFunds(query) {
 
 // Gets all the aggregate bars given a list of tickers.
 // Used to get the data for each stock in an index fund. 
+// Does not catch promise rejections. 
 
 async function getBarsFromList(tickers) {
-  try {
-    let bars = []
-    for (let i = 0; i < tickers.length; i++) {
-      let stockBars = await document.getStockBars(tickers[i])
-      bars.push(stockBars.results)
-    }
-  } catch (error) {
-    console.error("Error when getting aggregate bars for index fund.")
-    throw new Error(error)
+  let bars = []
+  for (let i = 0; i < tickers.length; i++) {
+    let stockBars = await document.getStockBars(tickers[i])
+    bars.push(stockBars.results)
   }
+  
   return bars
 }
 

@@ -1,3 +1,5 @@
+// Routes file, handles all of the routes in seperate files.
+
 const express = require("express");
 const router = express.Router();
 

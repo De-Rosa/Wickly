@@ -1,4 +1,8 @@
+// Index funds file, contains methods for getting/posting index funds by a given key.
 import { postJSONData, getJSONData } from "./lib/handler.js"
+
+// POST an index fund given a key.
+// Can return a rejected Promise, so must be error handled. 
 
 document.createIndexFund = async function(location, stocks) {
   if (!("id" in localStorage && "hashed_id" in localStorage)) {
@@ -6,6 +10,7 @@ document.createIndexFund = async function(location, stocks) {
     return Promise.reject(400);
   };
 
+  // Removing duplicates from the list.
   // https://stackoverflow.com/a/9229821
   let unique_stocks = [...new Set(stocks)]
   if (unique_stocks.length != stocks.length) {
@@ -23,6 +28,9 @@ document.createIndexFund = async function(location, stocks) {
   let result = await postJSONData("index-funds", data)
   return result;
 }
+
+// GET a comment from a given key/ticker.
+// Can return a rejected Promise, so must be error handled. 
 
 document.getIndexFund = async function(key) {
   if (!key) {

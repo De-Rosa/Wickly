@@ -1,8 +1,21 @@
+// Index funds route file, used to handle POST and GET index fund requests. 
+
 const express = require("express");
 const databases = require("../../databases/databases.js")
 const handling = require("../handling.js")
 
 module.exports = function(app) {
+
+  // Route which returns a JSON object of an index fund from its given key. 
+  // Formatted as '/index-funds?key={key}'.
+  // (key) is a string corresponding to a given index fund key. 
+  // If successful, sends a JSON object corresponding to the index fund (with code 200):
+  // {"stocks": KEY/TICKER LIST, "id": USER ID}
+  // If unsuccessful, sends the corresponding error code:
+  // 400 - invalid/missing key or other bad request,
+  // 404 - index fund doesn't exist at key,
+  // 500 - internal error when dealing with the JSON/database.
+  
   app.get('/index-funds', async function(req, res) {
     let query = req.query;
     let key = query.key;
@@ -12,6 +25,17 @@ module.exports = function(app) {
 
     databases.readFromDB("index-funds", key, res);
   })
+
+  // Route which POSTs a JSON object of an index fund given its key.
+  // POST request is formatted as:
+  // {"stocks": KEY/TICKER LIST, "id": USER ID, "hashed_id": USER HASHED ID, "key": KEY}
+  // There are allowed at most 10 keys in the KEY/TICKER LIST.
+  // Duplicates in the KEY/TICKER LIST are removed.
+  // If successful, sends code 200.   
+  // If unsuccessful, sends the corresponding error code:
+  // 400 - invalid POST body or other bad request,
+  // 500 - internal error when dealing with the JSON/database.
+  // 401 - unauthorized, ID and HASHED ID do not match.
 
   app.use(express.json())
   app.post('/index-funds', async function(req, res) {

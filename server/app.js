@@ -1,3 +1,5 @@
+// Main server file, performs the basic operations for setting up express.
+
 require('dotenv').config();
 const express = require("express");
 

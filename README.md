@@ -7,6 +7,10 @@ This requires a [polygon.io](https://polygon.io) API key and a defined (provided
     PORT = 8080
     POLYGON_API_KEY = "API KEY"
     HASH_KEY = "HASH KEY"
+
+Before starting, you must run 
+
+    npm install
 ## Running
 The server can be ran using 
 

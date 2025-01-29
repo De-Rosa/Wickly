@@ -102,6 +102,7 @@ describe('Testing comments endpoints', () => {
     return request(app)
       .get('/comments?key=NONEXIST')
       .expect(200)
+      .expect([])
   })
 
   test('GET request with no key: /comments?key=', () => {
@@ -226,6 +227,7 @@ describe('Testing index funds endpoints', () => {
     return request(app)
       .get('/index-funds?key=NONEXIST')
       .expect(200)
+      .expect([])
   })
 
   test('GET request with no key: /index-funds?key=', () => {
@@ -241,4 +243,87 @@ describe('Testing index funds endpoints', () => {
   })
 });
 
-// TODO: mocking for stocks GETs calls
+// Mocking the fetchPolygon function so that doesn't call the polygon.io API.
+jest.mock("../src/server/routes/stocks/polygon", () => jest.fn());
+const polygonFetchModule = require("../src/server/routes/stocks/polygon")
+polygonFetchModule.mockResolvedValue({});
+
+describe('Testing stocks endpoints', () => {
+  describe('GET details', () => {
+    test('GET with valid ticker: /stocks/details?key=AAPL', () => {
+      return request(app)
+        .get('/stocks/details?key=AAPL')
+        .expect(200)
+    });
+
+    test('GET with valid (not non-existent) ticker: /stocks/details?key=NONEXIST', () => {
+      return request(app)
+        .get('/stocks/details?key=NONEXIST')
+        .expect(200)
+    });
+
+    test('GET with invalid ticker: /stocks/details?key=test2', () => {
+      return request(app)
+        .get('/stocks/details?key=test2')
+        .expect(400)
+    });
+
+    test('GET with missing ticker: /stocks/details?key=', () => {
+      return request(app)
+        .get('/stocks/details?key=')
+        .expect(400)
+    })
+  })
+
+  describe('GET aggregate bars', () => {
+    test('GET with valid ticker: /stocks/aggs?key=AAPL', () => {
+      return request(app)
+        .get('/stocks/aggs?key=AAPL')
+        .expect(200)
+    });
+
+    test('GET with valid (not non-existent) ticker: /stocks/aggs?key=NONEXIST', () => {
+      return request(app)
+        .get('/stocks/aggs?key=NONEXIST')
+        .expect(200)
+    });
+
+    test('GET with invalid ticker: /stocks/aggs?key=test2', () => {
+      return request(app)
+        .get('/stocks/aggs?key=test2')
+        .expect(400)
+    });
+
+    test('GET with missing ticker: /stocks/aggs?key=', () => {
+      return request(app)
+        .get('/stocks/aggs?key=')
+        .expect(400)
+    })
+  })
+
+  describe('GET related tickers', () => {
+    test('GET with valid ticker: /stocks/related?key=AAPL', () => {
+      return request(app)
+        .get('/stocks/related?key=AAPL')
+        .expect(200)
+    });
+
+    test('GET with valid (not non-existent) ticker: /stocks/related?key=NONEXIST', () => {
+      return request(app)
+        .get('/stocks/related?key=NONEXIST')
+        .expect(200)
+    });
+
+    test('GET with invalid ticker: /stocks/related?key=test2', () => {
+      return request(app)
+        .get('/stocks/related?key=test2')
+        .expect(400)
+    });
+
+    test('GET with missing ticker: /stocks/related?key=', () => {
+      return request(app)
+        .get('/stocks/related?key=')
+        .expect(400)
+    })
+  })
+})

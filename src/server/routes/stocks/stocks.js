@@ -1,7 +1,7 @@
 // Index funds route file, used to handle POST and GET index fund requests. 
 
 const handling = require("../handling.js")
-const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+const fetchPolygon = require("./polygon.js")
 
 module.exports = async function(app) {
 
@@ -19,6 +19,10 @@ module.exports = async function(app) {
   
     let isValid = await handling.isGetRequestValid(key, res)
     if (!isValid) return;
+
+    // Key is not in correct format.
+    // https://stackoverflow.com/a/23476587
+    if (!/^([IX]:)?[A-Z.]*$/.test(key)) return handling.badRequest(res); 
 
     // PolygonIO REST documentations state:
     // /v2/aggs/ticker/{stocksTicker}/range/{multiplier}/{timespan}/{from}/{to}
@@ -49,6 +53,10 @@ module.exports = async function(app) {
     let isValid = await handling.isGetRequestValid(key, res)
     if (!isValid) return;
 
+    // Key is not in correct format.
+    // https://stackoverflow.com/a/23476587
+    if (!/^([IX]:)?[A-Z.]*$/.test(key)) return handling.badRequest(res); 
+
     // PolygonIO REST documentations state:
     // /v3/reference/tickers/{ticker}
     
@@ -74,6 +82,9 @@ module.exports = async function(app) {
   
     let isValid = await handling.isGetRequestValid(key, res)
     if (!isValid) return;
+    // Key is not in correct format.
+    // https://stackoverflow.com/a/23476587
+    if (!/^([IX]:)?[A-Z.]*$/.test(key)) return handling.badRequest(res); 
 
     // PolygonIO REST documentations state:
     // /v1/related-companies/{ticker}
@@ -87,30 +98,7 @@ module.exports = async function(app) {
   })
 
 
-  // Function which handles fetching data from PolygonIO.
-  // Instead of throwing an error, it instead sends an error code (and rejects the promise).
 
-  async function fetchPolygon(res, endpoint) {
-    const baseURL = "https://api.polygon.io"
-    try {
-      fetched = await fetch(`${baseURL}/${endpoint}`, {
-        method: "GET",
-        headers: {"Content-Type": "application/json"}
-      })
-
-      if (fetched.ok) return fetched.json();
-      if (fetched.status == "401") {
-        console.error("Unauthenticated with Polygon.io, check your API key?")
-        return handling.badGateway(res);
-      }
-
-      res.sendStatus(fetched.status)
-      throw new Error(fetched.status)
-
-    } catch (error) {
-      return Promise.reject(error)
-    }     
-  }
 
   // Returns two strings, one 5 months ago and one 2 days ago.
   // This is used for the timeframe used to get aggregate bars.

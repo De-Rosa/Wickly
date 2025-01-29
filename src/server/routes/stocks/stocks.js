@@ -99,6 +99,11 @@ module.exports = async function(app) {
       })
 
       if (fetched.ok) return fetched.json();
+      if (fetched.status == "401") {
+        console.error("Unauthenticated with Polygon.io, check your API key?")
+        return handling.badGateway(res);
+      }
+
       res.sendStatus(fetched.status)
       throw new Error(fetched.status)
 

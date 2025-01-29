@@ -90,7 +90,7 @@
           <!-- Text-input -->
           <!-- Auto-caps code from https://stackoverflow.com/a/49904823 -->
           <!-- Regex code from https://stackoverflow.com/a/37451454-->
-          <input name="ticker" oninput="let p=this.selectionStart;this.value=this.value.toUpperCase();this.setSelectionRange(p, p);" type="search" placeholder="Enter a ticker code..." class="grow max-w-48 mr-2 lg:max-w-lg" pattern="[A-Za-z.]*"/>
+          <input name="ticker" oninput="let p=this.selectionStart;this.value=this.value.toUpperCase();this.setSelectionRange(p, p);" type="search" placeholder="Enter a ticker code..." class="grow max-w-48 mr-2 lg:max-w-lg" pattern="[A-Z.]*"/>
 
           <!-- Loading spinner when waiting for server response. -->
           <!-- https://daisyui.com/components/loading/ -->

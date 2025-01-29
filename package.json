@@ -4,7 +4,7 @@
   "description": "stock tracker",
   "main": "./src/server/app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "dev": "nodemon ./src/server/app.js",
     "start": "node ./src/server/app.js",
     "compilecss": "npx tailwindcss -i ./src/public/css/input.css -o ./src/public/css/style.css"
@@ -24,7 +24,8 @@
     "express": "^4.21.2",
     "jest": "^29.7.0",
     "node-fetch": "^3.3.2",
-    "nodemon": "^3.1.9"
+    "nodemon": "^3.1.9",
+    "supertest": "^7.0.0"
   },
   "devDependencies": {
     "daisyui": "^4.12.23",

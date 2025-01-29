@@ -23,6 +23,11 @@ module.exports = function(app) {
     let isValid = await handling.isGetRequestValid(key, res)
     if (!isValid) return;
 
+    // Name of index fund is not uppercase characters.
+    // https://stackoverflow.com/a/23476587
+    if (!/^[A-Z]*$/.test(key)) return handling.badRequest(res); 
+
+
     databases.readFromDB("index-funds", key, res);
   })
 

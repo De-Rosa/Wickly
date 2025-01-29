@@ -75,7 +75,7 @@ document.search = async function (ticker, selection) {
 async function searchIndexFunds(query) {
   try {
     showLoading()
-    let key = `i:${query}`
+    let key = `I:${query}`
     let index = await document.getIndexFund(query)
     let comments = await document.getComments(key)
     let stocks = index.stocks
@@ -193,7 +193,7 @@ document.statusCodeToError = function(code, errorFunction) {
       errorFunction("Query doesn't exist...")
       break;
     case '401':
-      errorFunction("Failure with IDs. Reauthenticating, try again.")
+      errorFunction("Failure with authentication. Try again?")
       document.getIDs()
       break;
     case '409':
@@ -201,6 +201,9 @@ document.statusCodeToError = function(code, errorFunction) {
       break;
     case '429':
       errorFunction("Too many requests! Please try again later.")
+      break;
+    case '502':
+      errorFunction("Issue with server attempting to access polygon.io data.")
       break;
     case 'Load failed':
       errorFunction("The server is unresponsive. Please try again later.")

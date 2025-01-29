@@ -106,4 +106,9 @@ function internalError(res) {
   return false;
 }
 
-module.exports = { isGetRequestValid, isPostRequestValid, unauthorized, badRequest, conflict, notFound, internalError }
+function badGateway(res) {
+  res.sendStatus(502) // Server error: bad gateway.
+  return false;
+}
+
+module.exports = { isGetRequestValid, isPostRequestValid, unauthorized, badRequest, conflict, notFound, internalError, badGateway }

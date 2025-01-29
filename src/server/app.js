@@ -2,11 +2,11 @@
 
 require('dotenv').config();
 const express = require("express");
+const app = express();
 
 async function startApp() {
   console.log("Starting app...");
 
-  const app = express();
   const routes = require('./routes/routes');
   app.use(routes);
 
@@ -16,3 +16,5 @@ async function startApp() {
 
 
 startApp();
+
+module.exports = app;

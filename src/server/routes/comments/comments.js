@@ -23,6 +23,10 @@ module.exports = function(app) {
     let isValid = await handling.isGetRequestValid(key, res)
     if (!isValid) return;
 
+    // Key is not in correct format.
+    // https://stackoverflow.com/a/23476587
+    if (!/^([IX]:)?[A-Z.]*$/.test(key)) return handling.badRequest(res); 
+
     databases.readFromDB("comments", key, res);
   })
 
@@ -49,6 +53,10 @@ module.exports = function(app) {
     let parsed = JSON.parse(json);
 
     const {key, contents, id, hashed_id} = parsed
+
+    // Key is not in correct format.
+    // https://stackoverflow.com/a/23476587
+    if (!/^[A-Z.]*$/.test(key)) return handling.badRequest(res); 
 
     if (contents.length > 100 || contents.length == 0) return handling.badRequest(res);
     

@@ -56,7 +56,7 @@ module.exports = function(app) {
 
     // Key is not in correct format.
     // https://stackoverflow.com/a/23476587
-    if (!/^[A-Z.]*$/.test(key)) return handling.badRequest(res); 
+    if (!/^([IX]:)?[A-Z.]*$/.test(key)) return handling.badRequest(res); 
 
     if (contents.length > 100 || contents.length == 0) return handling.badRequest(res);
     
